@@ -1,0 +1,119 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="divport" content="width=device-width,
+                                     initial-scale=1.0,
+                                     maximum-scale=1.0"
+                                    >
+<title>Seminar</title>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="~/css/Seminar.css" rel="stylesheet" type="text/css">
+</head>
+<body class="body">
+
+    <div class="topBox">
+        <span class="title" id="coursename"></span>
+        <span class="title2" id="seminarname"></span>
+    </div>
+    <div class="ScoreBox" id="score">
+        <span class="ScoreText">打分</span>
+    </div>
+    <div class="CallBox" id="rollcall">
+        <span class="CallText">签到</span>
+    </div>
+    <div class="GroupBox" id="team">
+        <span class="GroupText">组队和选题</span>
+    </div>
+    <script src="~/js/query.js"></script>
+    <script src="~/js/jquery.min.js"></script>
+    <script type="text/javascript">
+        var token = window.localStorage.getItem("jwt");
+        var isfix;
+        var seminar = getQuery()["seminarId"];
+        var classId = getQuery()["classId"];
+        $(function () {
+            $.ajax({
+                type: 'GET',
+                url: '/seminar/' + seminar,
+                data: '',
+                contentType: 'application/json;charset=utf-8',
+                headers: { "Authorization": "Bearer " + token },
+                dataType: 'json',
+                success: function (result) {
+                    document.getElementById("coursename").innerText = result.course.name;
+                    document.getElementById("seminarname").innerText = result.name;
+                    isfix=result.isFixed;
+                }
+            })
+        });
+        $("#score").click(function () {
+            $.ajax({
+                type: 'GET',
+                url: '/seminar/' + seminar,
+                data: '',
+                contentType: 'application/json;charset=utf-8',
+                headers: { "Authorization": "Bearer " + token },
+                dataType: 'json',
+                success: function (result) {
+                    window.location.href = '/Seminar/GradePresentationUI?seminarId='+seminar;
+                }
+            })
+        });
+        $("#rollcall").click(function () {  
+            $.ajax({
+                type: 'GET',
+                url: '/seminar/' + seminar,
+                data: '',
+                contentType: 'application/json;charset=utf-8',
+                headers: { "Authorization": "Bearer " + token },
+                dataType: 'json',
+                success: function (result) {
+                    window.location.href = '/Seminar/StudentRollCallUI?seminarId=' + seminar + '&classId=' + classId;
+                }
+
+            })
+        });
+        $("#team").click(function () {
+            $.ajax({
+                type: 'GET',
+                url: '/Seminar/' + seminar + '/group/my',
+                data: '',
+                contentType: 'application/json;charset=utf-8',
+                headers: { "Authorization": "Bearer " + token },
+                dataType: 'json',
+                success: function (result) {
+                    if (isfix == true) {
+                        if (result.leader == null)
+                            window.location.href = '/Seminar/FixedGroupNoLeaderUI2?groupId=' + result.seminargroup.id + '&&seminarId=' + seminar;
+                        else if (result.userid == result.leader) {
+                            if (result.topic[0] == null)
+                                window.location.href = '/Seminar/FixedGroupLeaderUI2?groupId=' + result.seminargroup.id + '&&seminarId=' + seminar;
+                            else
+                                window.location.href = '/Seminar/FixedGroupLeaderUI?groupId=' + result.seminargroup.id + '&&seminarId=' + seminar;
+                        }
+                        else if (result.userid != result.leader)
+                            window.location.href = '/Seminar/FixedGroupMemberUI2?groupId=' + result.seminargroup.id + '&&seminarId=' + seminar;
+                    }
+                    else {
+                        if (result.leader == null)
+                            window.location.href = '/Seminar/RandomGroupNoLeaderUI2?groupId=' + result.seminargroup.id + '&&seminarId=' + seminar;
+                        else if (result.userid == result.leader) {
+                            if (result.topic[0] == null)
+                                window.location.href = '/Seminar/RandomGroupLeaderUI2?groupId=' + result.seminargroup.id + '&&seminarId=' + seminar;
+                            else
+                                window.location.href = '/Seminar/RandomGroupLeaderUI?groupId=' + result.seminargroup.id + '&&seminarId=' + seminar;
+                        }
+                        else if (result.userid != result.leader)
+                            window.location.href = '/Seminar/RandomGroupMemberUI2?groupId=' + result.seminargroup.id + '&&seminarId=' + seminar;
+
+                    }
+                }
+            })
+        })
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,85 @@
+﻿@{
+    ViewBag.Title = "Student";
+}
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="divport" content="width=device-width,
+                                     initial-scale=1.0,
+                                     maximum-scale=1.0">
+    <title>Student</title>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <link href="~/css/StudentMainUI.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="body">
+    <div class="PictureDiv">
+        <!-- 背景图的div -->
+        <img id="avatar" class="user" src="" onclick="location.href='/Student/CheckStudentInfo'"/>
+        <img src="~/images/background.jpg" class="Picture" onclick="location.hrel=''" />
+        <div class="name" id="name" onclick="location.href='/Student/CheckStudentInfo'">姓名：</div>
+        <div class="teacherID" id="number" onclick="location.href='/Student/CheckStudentInfo'">学号：</div>
+    </div>
+    <div class="lowBox"id="course_container">
+        <script>
+            var token = window.localStorage.getItem("jwt");
+                $.ajax({
+                    url: '/me',
+                    type: 'GET',
+                    contentType: 'application/json',
+                    headers: { "Authorization": "Bearer " + token },
+                    success: function (data) {
+                        $('#name').append(data.name);
+                        $('#number').append(data.number);
+                        if (data.avatar == null)
+                            document.getElementById("avatar").src = "/images/user.png";
+                        else {
+
+                            document.getElementById("avatar").src = data.avatar;
+                        }
+                  
+
+                    },
+                    error: function (error) {
+                        alert(error.responseJSON.msg);
+                    }
+                })
+
+                $.ajax({
+                    url: '/course',
+                    type: 'GET',
+                    contentType: 'application/json',
+                    headers: { "Authorization": "Bearer " + token },
+                    success: function (data) {
+                        for (i = 0; i < data.length; i++) {
+                            var course = data[i];
+                            template = "<div class=\"blueBox\" " + "onclick='window.location.href= &apos;/Course/CourseUI?courseId=" + course.id + "&apos;'>\n";
+                            template += "<p class=\"leftText\">";
+                            template += course.name;
+                            template += "</p>\n<p class=\"rightText\">老师：";
+                            template += course.teacher.name;
+                            template += "</p></div >";
+                            $('#course_container').append(template);
+                        }
+                        if (data.length == 0) {
+                            template = "<div>您没有任何课程</div>";
+                            $('#course_container').append(template);
+                        } 
+                    },
+                    error: function (error) {
+                        alert(error.responseJSON.msg);
+                    }
+                })
+        </script>
+    </div>
+</body>
+
+
+</html>
+
+
+

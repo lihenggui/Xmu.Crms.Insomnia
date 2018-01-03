@@ -1,0 +1,78 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="divport" content="width=device-width,
+                                     initial-scale=1.0,
+                                     maximum-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <link href="~/css/LoginUI.css" rel="stylesheet" type="text/css">
+</head>
+<body class="body">
+    <div class="PictureDiv">
+        <!-- 背景图的div -->
+        <img class="bulb" src="~/images/bulb.png" />
+        <img src="~/images/background.jpg" class="Picture" />
+        <div class="title">请先登录</div>
+    </div>
+    <div class="hrDiv"></div>
+    <div class="mainView">
+        <label for="phone" class="phoneID">手机号：</label>
+        <input type="text" class="inputPhoneID" id="phone" />
+        <label for="password" class="password">密码：</label>
+        <input type="password" id="password" class="inputPassword" minLength="6"/>
+        <div class="comfirmDiv">
+            <button type="submit" class="confirmButton" id="login">登录</button>
+        </div>
+        <div class="tip1">还没有账号？</div>
+        <div class="tip2" id="register" onclick="location.href = '/Register'">请先注册</div>
+    </div>
+
+    <script type="text/javascript">
+            $("#login").click(function () {
+                var phone = $("#phone").val();
+                var password = $("#password").val();
+                if (phone == '' || password == '') {
+                    alert("请填写手机号和密码");
+                } else {
+                    $.ajax({
+                        url: '/signin',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        dateType:'json',
+                        data: JSON.stringify({
+                            phone: phone,
+                            password: password
+                        }),
+                        dateType: 'json',
+                        success: function (data) {
+                            window.localStorage.setItem('jwt', data.jwt);
+                            window.localStorage.setItem('id', data.id);
+                            window.localStorage.setItem('type', data.type);
+                            if (data.type == 'Unbinded')
+                            {
+                                alert("未绑定账号，请绑定");
+                                document.location.href = '/Register/ChooseCharacter';
+                            }
+                            else if (data.type=='Student')
+                                document.location.href = '/Student';
+                            else
+                                document.location.href = '/Teacher';
+                        },
+                        error: function (error) {
+                            alert(error.responseJSON.msg);
+                            document.location.href = '/Login';
+                        }
+                    });
+                }
+            });
+    </script>
+
+    
+</body>
+
+</html>
+
+

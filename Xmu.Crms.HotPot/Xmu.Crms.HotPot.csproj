@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.0.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.1.5" />
+	<DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Xmu.Crms.Services.HotPot.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+
+    <ProjectReference Include="..\Xmu.Crms.API.Insomnia\Xmu.Crms.API.Insomnia.csproj" />
+
+    <ProjectReference Include="..\Xmu.Crms.Mobile.HotPot\Xmu.Crms.Mobile.HotPot.csproj" />
+
+    <ProjectReference Include="..\Xmu.Crms.Services.1-7\Xmu.Crms.Services.Group1_7.csproj" />
+
+    <ProjectReference Include="..\Xmu.Crms.Services.2-10\Xmu.Crms.Services.Group2_10.csproj" />
+
+    <ProjectReference Include="..\Xmu.Crms.Services.HotPot\Xmu.Crms.Services.HotPot.csproj" />
+
+    <ProjectReference Include="..\Xmu.Crms.Services.Insomnia\Xmu.Crms.Services.Insomnia.csproj" />
+
+    <ProjectReference Include="..\Xmu.Crms.Services.SmartFive\Xmu.Crms.Services.SmartFive.csproj" />
+
+    <ProjectReference Include="..\Xmu.Crms.Shared\Xmu.Crms.Shared.csproj" />
+
+    <ProjectReference Include="..\Xmu.Crms.Web.Insomnia\Xmu.Crms.Web.Insomnia.csproj" />
+
+    <Content Update="launchSettings.json">
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </Content>
+
+    <PackageReference Update="Microsoft.NETCore.App" Version="2.0.3" />
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties Properties_4launchSettings_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
+
+</Project>

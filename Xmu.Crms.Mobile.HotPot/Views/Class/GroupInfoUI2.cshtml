@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="divport" content="width=device-width,
+                                     initial-scale=1.0,
+                                     maximum-scale=1.0">
+    <title>AddLateStudent</title>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/GroupInfoUI2.css">
+    <link rel="stylesheet" href="~/css/RollStartCallUI.css">
+</head>
+<body>
+
+    <!--设置左上角的usersIcon-->
+    <div class="blueUsersDiv">
+        <img src="~/images/users.png" class='blueUsersIcon' />
+        <strong>未签到学生信息</strong>
+    </div>
+
+    <!--细线，hr不好设置css，用一个高度很小的div来代替-->
+    <div class="hrDiv">
+    </div>
+
+    <!--迟到学生上面那个蓝色的bar-->
+    <div class='studentNoCallBarDiv'>
+        <span>迟到学生</span>
+    </div>
+
+    <div id="lateList"></div>
+
+    <div>
+        <button type="button" class="greenBigBtn" id="comeback">
+            取消添加
+        </button>
+    </div>
+    <script src="~/js/query.js"></script>
+    <script src="~/js/jquery.min.js"></script>
+    <script type="text/javascript">
+        var classId = getQuery()["classId"];
+        var seminarId = getQuery()["seminarId"];
+        var groupId = getQuery()["groupId"];
+        var token = window.localStorage.getItem("jwt");
+        $("#comeback").click(function () {
+            window.location.href = "/Class/GroupInfoUI?classId=" + classId + "&seminarId=" + seminarId;
+        });
+        $(function () {
+            $.ajax({
+                type: 'GET',
+                url: '/class/' + classId + '/' + seminarId + '/attendance/showlate',
+                dataType: 'json',
+                contentType: 'application/json;charset=utf-8',
+                headers: { "Authorization": "Bearer " + token },
+                success: function (result) {
+                    var absentlist = result.studentList;
+                    var list2 = '';
+                    for (i = 0; i < result.latecount; i++) {
+                        if (i % 2 == 0) {
+                            list2 += '<div class="studentLeftBlock"  data-user-id=' + absentlist[i].id + '>' +
+                                '<img src="/images/user.png" class="userIcon" />' +
+                                '<span class="studentName">' + absentlist[i].name + '</span>' +
+                                '</div>';
+                        } else {
+                            list2 += '<div class="studentRightBlock" data-user-id=' + absentlist[i].id + '>' +
+                                '<img src="/images/user.png" class="userIcon" />' +
+                                '<span class="studentName">' + absentlist[i].name + '</span>' +
+                                '</div>';
+                        }
+                    }
+                    $("#lateList").append(list2);
+                    $(".studentRightBlock").click(function () {
+                        var userId = $(this).attr("data-user-id");
+                        if (confirm("提示：确定添加此学生？")) {
+                            $.ajax({
+                                type: 'PUT',
+                                url: '/group/' + groupId + '/addlate/' + userId,
+                                contentType: 'application/json',
+                                dateType: 'json',
+                                headers: { "Authorization": "Bearer " + token },
+                                success: function () {
+                                    window.location.href = "/Class/GroupInfoUI?classId=" + classId + "&seminarId=" + seminarId;
+                                }
+                            })
+                        }
+                    });
+                    $(".studentLeftBlock").click(function () {
+                        var userId = $(this).attr("data-user-id");
+                        if (confirm("提示：确定添加此学生？")) {
+                            $.ajax({
+                                type: 'PUT',
+                                url: '/group/' + groupId + '/addlate/' + userId,
+                                contentType: 'application/json',
+                                dateType: 'json',
+                                headers: { "Authorization": "Bearer " + token },
+                                success: function () {
+                                    window.location.href = "/Class/GroupInfoUI?classId=" + classId + "&seminarId=" + seminarId;
+                                }
+                            })
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

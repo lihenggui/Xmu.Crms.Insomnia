@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Random Group</title>
+    <link rel="stylesheet" href="~/css/fixgroup.css">
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+<body class="fullbackground">
+    <script src="~/js/query.js"></script>
+    <script src="~/js/jquery.min.js"></script>
+    <script type="text/javascript">
+        var token = window.localStorage.getItem("jwt");
+        var group = getQuery()["groupId"];
+        var seminar = getQuery()["seminarId"];
+        $(function () {
+            $.ajax({
+                type: 'GET',
+                url: '/group/' + group,
+                data: '',
+                contentType: 'application/json;charset=utf-8',
+                headers: { "Authorization": "Bearer " + token },
+                dataType: 'json',
+                success: function (result) {
+                    $("#leadername").append(result.leader.name + '<br/>' + result.leader.number);
+
+                    $.each(result.members, function (i, value) {
+                        $("#members").append('<div class="block"><div class="panel-body" >' +
+                            '<div class="column1">' + '<img src="../images/user.png">' + '</div>' +
+                            '<div class="column2">' + value.name +
+                            '<br/>' + value.number + '</div></div></div>');
+                    });
+                }
+            })
+        });
+        function jump() {
+            $.ajax({
+                type: "PUT",
+                url: '/group/' + group + '/resign',
+                data: '',
+                contentType: 'application/json;charset=utf-8',
+                datatype: 'json',
+                headers: { "Authorization": "Bearer " + token },
+                success: function (data) {
+                    window.location.href = '/Seminar/RandomGroupNoLeaderUI2?groupId=' + group + '&&seminarId=' + seminar;
+                },
+                error: function (mesg) {
+                    alert(mesg);
+                }
+            });
+        };
+
+        function choose() {
+            window.location.href = '/Seminar/RandomGroupChooseTopicUI2?groupId=' + group + '&&seminarId=' + seminar;
+        };
+
+    </script>
+    <div class="seminarblock">
+        <div class="panel-body">
+            <div class="column0"><img src="~/images/users.png"></div>
+            <div class="column2">讨论课<br />随机分组</div>
+        </div>
+    </div>
+
+    <div class="whitetitle">
+        <div class="panel-body">
+            <div class="column4">队伍信息：</div>
+            <div class="column3"><button class="btnquit" onclick="jump()">辞职</button></div>
+        </div>
+    </div>
+
+
+    <div id="members">
+        <div class="block">
+            <div class="panel-body">
+                <div class="column1"><img src="~/images/user.png"></div>
+                <div class="column2" id="leadername"></div>
+                <div class="column3 leaderp">队长</div>
+            </div>
+        </div>
+        <!--每有一个成员复制一个-->
+    </div>
+
+    <div class="middlediv">
+        <button type="button" class="btnleader" onclick="choose()">选题</button>
+    </div>
+
+</body>
+</html>
