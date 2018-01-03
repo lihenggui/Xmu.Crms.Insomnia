@@ -93,7 +93,7 @@
         }
 
         $.ajax({
-            url: 'group/' + id,
+            url: '/desktop/group/' + id,
             type: 'GET',
             dataType: 'json',
             headers: {"Authorization": "Bearer " + token},
@@ -106,14 +106,14 @@
         $("#submit").click(function(e) {
             e.preventDefault();
             $.ajax({
-                url: 'group/' + id + '/grade/report',
+                url: '/desktop/group/' + id + '/grade/report',
                 type: 'PUT',
                 dataType: 'json',
                 contentType: 'application/json',
                 headers: {"Authorization": "Bearer " + token},
                 data: JSON.stringify({ reportGrade: $("#score").val() }),
                 success: function() {
-                    window.location.href = "Teacher/Seminar/Score?id=" + seminar + "&course=" + course;
+                    window.location.href = "/desktop/Teacher/Seminar/Score?id=" + seminar + "&course=" + course;
                 }
             });
         });

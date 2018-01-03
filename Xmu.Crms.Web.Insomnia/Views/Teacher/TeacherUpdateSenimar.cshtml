@@ -76,7 +76,7 @@
         }
         $("form").attr("action", window.location.href);
         $.ajax({
-            url: 'seminar/' + id,
+            url: '/desktop/seminar/' + id,
             type: 'GET',
             dataType: 'json',
             headers: {"Authorization": "Bearer " + token},
@@ -90,7 +90,7 @@
         $(".submit").click(function(e) {
             e.preventDefault();
             $.ajax({
-                url: 'seminar/' + id,
+                url: '/desktop/seminar/' + id,
                 type: 'PUT',
                 contentType: 'application/json',
                 dataType: 'json',
@@ -103,7 +103,7 @@
                     groupingMethod: $("#groupingMethod").val()
                 }),
                 success: function() {
-                    window.location.href = 'Teacher/Seminar?id=' + id + "&course=" + course;
+                    window.location.href = '/desktop/Teacher/Seminar?id=' + id + "&course=" + course;
                 }
             });
         });
